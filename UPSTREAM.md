@@ -16,9 +16,13 @@ All upstream files are unchanged apart from a short note at the top of
 `README.md`. Local additions:
 
 - `UPSTREAM.md`: this file.
+- `kronos_mcp.py`, `.mcp.json`, `requirements-mcp.txt`: an MCP server that
+  lets Claude call Kronos as a connector. See [`CLAUDE_CONNECTOR.md`](CLAUDE_CONNECTOR.md).
 - `tests/test_offline_smoke.py`: runs the full predict path (`predict`,
   `predict_batch`, no-volume input, save/load round-trip) on tiny randomly
   initialised models, so it needs no network access or downloaded weights.
+- `tests/test_mcp_server.py`: tests for the MCP server, also offline.
+- `tests/conftest.py`: the tiny models both test files use.
 
 ## Setup
 

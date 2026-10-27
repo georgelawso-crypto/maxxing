@@ -19,24 +19,11 @@ INPUT_DATA_PATH = Path(__file__).parent / "data" / "regression_input.csv"
 FEATURE_NAMES = ["open", "high", "low", "close", "volume", "amount"]
 CONTEXT_LEN = 64
 PRED_LEN = 8
-SEED = 0
-
-TOKENIZER_CONFIG = dict(
-    d_in=6, d_model=32, n_heads=2, ff_dim=64, n_enc_layers=2, n_dec_layers=2,
-    ffn_dropout_p=0.0, attn_dropout_p=0.0, resid_dropout_p=0.0,
-    s1_bits=4, s2_bits=4, beta=0.05, gamma0=1.0, gamma=1.1, zeta=0.05, group_size=4,
-)
-MODEL_CONFIG = dict(
-    s1_bits=4, s2_bits=4, n_layers=2, d_model=32, n_heads=2, ff_dim=64,
-    ffn_dropout_p=0.0, attn_dropout_p=0.0, resid_dropout_p=0.0, token_dropout_p=0.0, learn_te=True,
-)
 
 
-@pytest.fixture(scope="module")
-def tiny_predictor():
-    torch.manual_seed(SEED)
-    tokenizer = KronosTokenizer(**TOKENIZER_CONFIG).eval()
-    model = Kronos(**MODEL_CONFIG).eval()
+@pytest.fixture
+def tiny_predictor(tiny_models):
+    tokenizer, model = tiny_models
     # max_context == CONTEXT_LEN so decoding also exercises the rolling context-window branch.
     return KronosPredictor(model, tokenizer, device="cpu", max_context=CONTEXT_LEN)
 
@@ -101,11 +88,9 @@ def test_greedy_decoding_is_deterministic(tiny_predictor, kline_df):
     pd.testing.assert_frame_equal(first, second)
 
 
-def test_save_and_load_pretrained_roundtrip(tmp_path):
+def test_save_and_load_pretrained_roundtrip(tiny_models, tmp_path):
     # Same loading path as from_pretrained("NeoQuasar/..."), but from a local directory.
-    torch.manual_seed(SEED)
-    tokenizer = KronosTokenizer(**TOKENIZER_CONFIG).eval()
-    model = Kronos(**MODEL_CONFIG).eval()
+    tokenizer, model = tiny_models
     tokenizer.save_pretrained(tmp_path / "tokenizer")
     model.save_pretrained(tmp_path / "model")
 
