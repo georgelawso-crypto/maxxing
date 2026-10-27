@@ -1,3 +1,5 @@
+> **Note:** this repository is a snapshot of [shiyu-coder/Kronos](https://github.com/shiyu-coder/Kronos) (MIT License). See [UPSTREAM.md](UPSTREAM.md) for the source commit, setup, and tests.
+
 <div align="center">
   <h2><b>Kronos: A Foundation Model for the Language of Financial Markets </b></h2>
 </div>
